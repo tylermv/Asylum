@@ -4,20 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class TextController : MonoBehaviour {
+public class Arrival_script : MonoBehaviour {
 
 
 	public Text text;
 
+	public int psychValue;
+	private PsychController psychController;
 	private States myState;
-	private enum States {arrival_1, arrival_2, door, open_door, knock, knock_2, windows, car, building, 
-		car_2, shed, knock_3, door_2, windows_2, windows_3};
+	private enum States { arrival_1, arrival_2, door, open_door, open_door_2, knock, knock_2, windows, car, building, 
+		car_2, shed, knock_3, door_2, windows_2, windows_3 };
+
 
 
 	// Use this for initialization
 	void Start () {
 		myState = States.arrival_1;
+		GameObject psychControllerObject = GameObject.FindWithTag ("PsychCounter");
 
+		if (psychControllerObject != null) {
+			psychController = psychControllerObject.GetComponent <PsychController> ();
+		}
+		if (psychController == null) {
+			Debug.Log ("Cannot find 'PsychController' script");
+		}
 	}
 
 	// Update is called once per frame
@@ -31,6 +41,8 @@ public class TextController : MonoBehaviour {
 			state_door ();
 		} else if (myState == States.open_door) {
 			state_open_door ();
+		} else if (myState == States.open_door_2) {
+			state_open_door_2 ();
 		} else if (myState == States.knock) {
 			state_knock ();
 		} else if (myState == States.knock_2) {
@@ -88,7 +100,7 @@ public class TextController : MonoBehaviour {
 
 				if (Input.GetKeyDown (KeyCode.K)) {
 					myState = States.knock;
-				} else if (Input.GetKeyDown (KeyCode.O)) {
+				}  else if (Input.GetKeyDown (KeyCode.W)) {
 					myState = States.open_door;
 					}
 				}
@@ -121,8 +133,31 @@ public class TextController : MonoBehaviour {
 			}
 			
 			void state_open_door () {
-				
-			}
+		psychController.AddPsychCounter (psychValue);
+		text.text = "You try the door knob. It won't budge. Weird, you think. It's never been locked before." +
+		"When you used to visit your parents here the doors were always open.\n\n" +
+		"Press Space to continue";
+
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			myState = States.open_door_2;
+		}
+	}
+
+	void state_open_door_2 () {
+		text.text = "To your right you see some Windows. If they open you could climb through. " +
+			"You wonder if it's maybe worth taking a look around the building. You glance back at your car. " +
+			"You could have something useful in the trunk\n" +
+			"Press W to check the Windows\n" +
+			"Press B to take a look around the Building\n" +
+			"Press C to check out the Car";
+		if (Input.GetKeyDown (KeyCode.W)) {
+			myState = States.windows;
+		} else if (Input.GetKeyDown (KeyCode.B)) {
+			myState = States.building;
+		} else if (Input.GetKeyDown (KeyCode.C)) {
+			myState = States.car;
+		}
+	}
 
 			void state_car () {
 		text.text = "car\n\n" +
@@ -223,6 +258,4 @@ public class TextController : MonoBehaviour {
 		}
 	}
 }
-
-//To Do: Set the psychpath counter in the case that they just try to walk in and add it to the scene
 
