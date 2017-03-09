@@ -6,14 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class Arrival_script : MonoBehaviour {
 
-
 	public Text text;
 
-	public int psychValue;
+	public int psychValue = 0;
 	private PsychController psychController;
 	private States myState;
 	private enum States { arrival_1, arrival_2, door, open_door, open_door_2, knock, knock_2, windows, car, building, 
-		car_2, shed, knock_3, door_2, windows_2, windows_3 };
+		car_2, shed, knock_3, door_2, windows_2, windows_3, inventory, smash };
 
 
 
@@ -65,6 +64,10 @@ public class Arrival_script : MonoBehaviour {
 			state_door_2 ();
 		} else if (myState == States.windows_3) {
 			state_windows_3 ();
+		} else if (myState == States.inventory) {
+			state_inventory ();
+		} else if (myState == States.smash) {
+			state_smash ();
 		}
 
 	} 
@@ -204,7 +207,7 @@ public class Arrival_script : MonoBehaviour {
 		}
 
 			void state_shed () {
-			text.text = "You rustle through the shed. You find an Item. This could come in handy.\n\n" +
+			text.text = "You rustle through the shed. You find an Crow Bar. This could come in handy.\n\n" +
 			"Press R to return to front"; 
 
 		if (Input.GetKeyDown (KeyCode.R)) {
@@ -217,13 +220,15 @@ public class Arrival_script : MonoBehaviour {
 				"Press O to try Opening the front door again.\n" +
 				"Press C to Check your Car\n" +
 				"Press W to investigate the Window\n";
-					if (Input.GetKeyDown (KeyCode.O)) {
-						myState = States.door_2;
-					} else if (Input.GetKeyDown (KeyCode.C)) {
-						myState = States.car_2;
-					} else if (Input.GetKeyDown (KeyCode.W)) {
-						myState = States.windows_2;
-					}
+		if (Input.GetKeyDown (KeyCode.O)) {
+			myState = States.door_2;
+		} else if (Input.GetKeyDown (KeyCode.C)) {
+			myState = States.car_2;
+		} else if (Input.GetKeyDown (KeyCode.W)) {
+			myState = States.windows_2;
+		} else if (Input.GetKeyDown (KeyCode.I)) {
+			myState = States.inventory;
+		}
 	}
 
 			void state_door_2 () {
@@ -237,19 +242,22 @@ public class Arrival_script : MonoBehaviour {
 
 	void state_windows_2 () {
 		text.text = "Windows 2\n\n" +
-			"Press I to use Items on the Windown\n" +
+			"Press S to Smash the Window open\n" +
+			"Press P to Pry the window open\n\n" +
 			"Press R to Return";
-		if (Input.GetKeyDown (KeyCode.I)) {
+		if (Input.GetKeyDown (KeyCode.P)) {
 			myState = States.windows_3;
 		} else if (Input.GetKeyDown (KeyCode.R)) {
 			myState = States.knock_3;
+		} else if (Input.GetKeyDown (KeyCode.S)) {
+			myState = States.smash;
 		}
 	}
 
 	void state_windows_3 () {
-		text.text = "You use the Item on the Window. " +
+		text.text = "You use the I on the Window. " +
 			"With some force the window pries open.\n\n" +
-			"Press C to climb through thr window\n" +
+			"Press C to climb through the window\n" +
 			"Press R to Return";
 		if (Input.GetKeyDown (KeyCode.C)) {
 			SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
@@ -257,5 +265,19 @@ public class Arrival_script : MonoBehaviour {
 			myState = States.knock_3;
 		}
 	}
-}
 
+	void state_inventory () {
+		text.text = "You check your backpack to find\n\n " +
+		"1 Item";
+	}
+
+	void state_smash () {
+		psychController.AddPsychCounter (psychValue + 1);
+		text.text = "You smash the Window open\n" +
+		"Press c to climb through the window";
+		if (Input.GetKeyDown (KeyCode.C)) {
+			SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+		
+		}
+	}
+}
