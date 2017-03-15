@@ -854,6 +854,5 @@ public class Asylum_script : MonoBehaviour {
 				SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
 			}
 		}
-
-		}
+	}
 }
