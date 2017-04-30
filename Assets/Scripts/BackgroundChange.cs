@@ -27,7 +27,7 @@ public class BackgroundChange : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (CheckState) {
-			if (GameObject.Find ("Text").GetComponent<Asylum_script> ().myState == Asylum_script.States.room4) {
+			if (GameObject.Find ("Text").GetComponent<Asylum_script> ().myState == Asylum_script.States.room1) {
 				FlipBackground ();
 	
 				CheckState = false;
